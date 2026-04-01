@@ -6,12 +6,12 @@
 
 | Circuito | Calibre | Color (ver código) | Tipo |
 |----------|---------|--------------------|------|
-| Entradas digitales I1–I8 | AWG 22 / 0.5mm² | Verde | Flexible THHN o control |
-| Entradas analógicas AI1–AI6 | AWG 22 / 0.5mm² | Azul claro | Flexible THHN o control |
-| Salidas analógicas AO1–AO2 | AWG 22 / 0.5mm² | Naranja | Flexible THHN o control |
-| Salidas PWM P1–P4 | AWG 22 / 0.5mm² | Blanco | Flexible THHN o control |
-| Alimentación 24V a módulos | AWG 18 / 0.75mm² | Rojo (+) / Negro (−) | Flexible THHN o control |
-| Salidas relé O1–O4 | AWG 16 / 1.5mm² | Amarillo | Flexible THHN o control |
+| Entradas digitales I1–I8 | Calibre 20 / 0.5mm² | Verde | Flexible THHN o control |
+| Entradas analógicas AI1–AI6 | Calibre 20 / 0.5mm² | Azul claro | Flexible THHN o control |
+| Salidas analógicas AO1–AO2 | Calibre 20 / 0.5mm² | Naranja | Flexible THHN o control |
+| Salidas PWM P1–P4 | Calibre 20 / 0.5mm² | Blanco | Flexible THHN o control |
+| Alimentación 24V a módulos | Calibre 18 / 0.75mm² | Rojo (+) / Negro (−) | Flexible THHN o control |
+| Salidas relé O1–O4 | Calibre 16 / 1.5mm² | Amarillo | Flexible THHN o control |
 | **Termopar CELSIUS** | — | Gris | **Cable de termopar tipo K compensado** ⚠️ |
 
 > ⚠️ **Importante — Termopar:** No usar cable de cobre normal. El cable de termopar tipo K tiene conductores de aleación específica (Chromel/Alumel). Usar cobre genera una unión parásita que introduce error en la medición de temperatura.
@@ -44,13 +44,13 @@
 #### Cable interno
 | Color | Calibre | Circuito | Metros estimados* |
 |-------|---------|----------|-----------------|
-| Rojo | 0.75mm² | +24V alimentación | ~3m |
-| Negro | 0.75mm² | GND alimentación | ~3m |
-| Verde | 0.5mm² | Entradas digitales × 8 | ~6m |
-| Azul claro | 0.5mm² | Entradas analógicas × 6 | ~5m |
-| Naranja | 0.5mm² | Salidas analógicas × 2 | ~2m |
-| Blanco | 0.5mm² | Salidas PWM × 4 | ~3m |
-| Amarillo | 1.5mm² | Salidas relé × 4 | ~4m |
+| Rojo | Calibre 18 / 0.75mm² | +24V alimentación | ~3m |
+| Negro | Calibre 18 / 0.75mm² | GND alimentación | ~3m |
+| Verde | Calibre 20 / 0.5mm² | Entradas digitales × 8 | ~6m |
+| Azul claro | Calibre 20 / 0.5mm² | Entradas analógicas × 6 | ~5m |
+| Naranja | Calibre 20 / 0.5mm² | Salidas analógicas × 2 | ~2m |
+| Blanco | Calibre 20 / 0.5mm² | Salidas PWM × 4 | ~3m |
+| Amarillo | Calibre 16 / 1.5mm² | Salidas relé × 4 | ~4m |
 | Gris | Tipo K compensado | Termopar | ~1m |
 
 *Estimados para gabinete 500×600mm con canaletas. Pedir 20–30% extra por errores de corte.
