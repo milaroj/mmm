@@ -1,89 +1,66 @@
-# Laboratorio 4
-
-**Semana #5: 18/Marzo/2026**  
-**Taller de Diseño Digital - EL3313: I Semestre 2026**  
-**Profesor: Luis G. León-Vega, Ph.D**
+# Cables y materiales — Plataforma 1 (Gabinete PLC)
 
 ---
 
-### Integrantes
+## Calibres de cable interno
 
-| Nombre | Carné |
-|---|---|
-| Angie Hernández Mairena | 2021093932 |
-| Brayan Solís Rojas | 2020168427 |
-| Milagro Rojas Sánchez | 2020412342 |
+| Circuito | Calibre | Color (ver código) | Tipo |
+|----------|---------|--------------------|------|
+| Entradas digitales I1–I8 | AWG 22 / 0.5mm² | Verde | Flexible THHN o control |
+| Entradas analógicas AI1–AI6 | AWG 22 / 0.5mm² | Azul claro | Flexible THHN o control |
+| Salidas analógicas AO1–AO2 | AWG 22 / 0.5mm² | Naranja | Flexible THHN o control |
+| Salidas PWM P1–P4 | AWG 22 / 0.5mm² | Blanco | Flexible THHN o control |
+| Alimentación 24V a módulos | AWG 18 / 0.75mm² | Rojo (+) / Negro (−) | Flexible THHN o control |
+| Salidas relé O1–O4 | AWG 16 / 1.5mm² | Amarillo | Flexible THHN o control |
+| **Termopar CELSIUS** | — | Gris | **Cable de termopar tipo K compensado** ⚠️ |
+
+> ⚠️ **Importante — Termopar:** No usar cable de cobre normal. El cable de termopar tipo K tiene conductores de aleación específica (Chromel/Alumel). Usar cobre genera una unión parásita que introduce error en la medición de temperatura.
 
 ---
 
-## Objetivo
+## Lista completa de materiales — Plataforma 1
 
-Ejercitar los conceptos vistos durante la parte teórica del taller mediante la exposición del estudiante ante proyectos prácticos sencillos, con la finalidad de asimilar el flujo de trabajo del diseño digital con EDA.
+### Ya en la cotización
+| Ítem | Cant. cotizada | Estado |
+|------|---------------|--------|
+| Riel DIN perforado CP644 1MT | 1 | ⚠️ Insuficiente — ver nota |
+| Ducto ranurado 20×25mm | 1 | ⚠️ Revisar cantidad |
+| WAGO 2202 2.5mm² gris | 100 | ✓ |
+| WAGO 2202 2.5mm² verde/tierra | 10 | ✓ |
 
----
-
-## Preguntas de Seguimiento del Aprendizaje
-
-### 1. Complete la Tabla 1
-
-| Reporte | Uniciclo | Multiciclo | Segmentado |
-|---|---|---|---|
-| Consumo CLBs (%) | 1.11% | 0.29% | 1.10% |
-| Consumo DSPs (%) | 0% | 0% | 0% |
-| Retraso crítico | 2.682 ns | 9.929 ns | 8.282 ns |
-| Frecuencia máxima | 372.9 MHz | 100.7 MHz | 120.7 MHz |
-
-> **Nota metodológica — cómo obtener estos datos en Vivado:**
+> ⚠️ **Riel DIN:** El gabinete tiene 3 rieles de ~450mm cada uno = ~1.35m mínimo. Con 1 metro no alcanza. Pedir **2 metros** para tener margen de corte.
 >
-> **Consumo de CLBs y DSPs** → luego de correr *Run Implementation*, ir a:
-> `Reports → Report Utilization`
-> En la tabla resultante buscar:
-> - **Slice LUTs** bajo la sección *CLB Logic*: `LUTs usados / 63400 × 100`
-> - **DSPs** bajo la sección *DSP*: `DSPs usados / 240 × 100`
->
-> **Retraso crítico y Frecuencia máxima** → luego de correr *Run Implementation*, ir a:
-> `Reports → Report Timing Summary`
-> Buscar el valor de **WNS (Worst Negative Slack)** y aplicar:
-> ```
-> Retraso crítico = Período de reloj − WNS
->                = 10 ns − WNS
->
-> Frecuencia máxima = 1 / Retraso crítico
-> ```
-> Por ejemplo, con WNS = 7.318 ns:
-> ```
-> Retraso crítico = 10 − 7.318 = 2.682 ns
-> Frecuencia máxima = 1 / 2.682 ns ≈ 372.9 MHz
-> ```
+> ⚠️ **Ducto:** El diseño tiene canaleta superior, media 1, media 2 y laterales. Verificar cuántos metros lineales se necesitan según las dimensiones del gabinete.
 
 ---
 
-### 2. Basado en las observaciones en los diagramas de elaboración, ¿por qué las distintas microarquitecturas consumen menos o más recursos? ¿Cómo puede asociarlo a lo visto en las microarquitecturas de RISC-V?
+### Faltantes — agregar a la cotización
 
-> La microarquitectura uniciclo instancia 8 multiplicadores y un árbol de sumas combinacional simultáneamente, lo que se traduce en mayor uso de LUTs. La segmentada tiene un consumo similar porque aunque divide el cómputo en etapas, sigue instanciando los mismos 8 multiplicadores en paralelo más registros de pipeline adicionales. La multiciclo consume significativamente menos recursos (0.29% vs ~1.1%) porque reutiliza un único multiplicador y un acumulador, a costa de requerir más ciclos por resultado.
->
-> Esto es análogo a las microarquitecturas de RISC-V: el procesador uniciclo instancia toda la ruta de datos de forma paralela (ALU, memorias, sumadores de PC) sin compartir hardware, mientras que el multiciclo reutiliza la misma ALU en diferentes etapas de la instrucción. El segmentado de RISC-V, al igual que en este lab, mantiene múltiples unidades activas simultáneamente pero agrega registros entre etapas, por lo que su uso de recursos es comparable al uniciclo.
+#### Accesorios de borneras
+| Ítem | Cant. estimada | Nota |
+|------|---------------|------|
+| Borneras rojo/negro 2.5mm² (alimentación Riel 2) | 8 pares (16 uds) | Equivalente Dinkle DK4N o similar |
+| End stops / topes finales de riel | 12 uds | 2 por extremo de riel × 3 rieles |
+| Divisores de grupo | 16 uds | Para separar grupos de señales visualmente |
+| Puentes de cortocircuito (jumper bar) | 4 tiras | Para unir borneras de +24V o GND comunes |
+| Marcadores de cable numerados (clip) | 1 juego | Para identificar I1–I8, O1–O4, AI1–AI6, etc. |
 
----
+#### Cable interno
+| Color | Calibre | Circuito | Metros estimados* |
+|-------|---------|----------|-----------------|
+| Rojo | 0.75mm² | +24V alimentación | ~3m |
+| Negro | 0.75mm² | GND alimentación | ~3m |
+| Verde | 0.5mm² | Entradas digitales × 8 | ~6m |
+| Azul claro | 0.5mm² | Entradas analógicas × 6 | ~5m |
+| Naranja | 0.5mm² | Salidas analógicas × 2 | ~2m |
+| Blanco | 0.5mm² | Salidas PWM × 4 | ~3m |
+| Amarillo | 1.5mm² | Salidas relé × 4 | ~4m |
+| Gris | Tipo K compensado | Termopar | ~1m |
 
-### 3. En sus propias palabras, ¿cuándo se debe usar una microarquitectura u otra? Ejemplifique en casos como: bajo consumo de potencia con alta duración de batería, computación y medicina.
+*Estimados para gabinete 500×600mm con canaletas. Pedir 20–30% extra por errores de corte.
 
-> La microarquitectura **uniciclo** es adecuada cuando se necesita latencia mínima y el diseño es simple. En aplicaciones de **bajo consumo con alta duración de batería** (ej. sensores IoT, wearables), sin embargo, no es la mejor opción porque mantiene toda la lógica activa aunque no se use, disipando más energía estática.
->
-> La microarquitectura **multiciclo** es ideal para sistemas con **restricciones de área y potencia**, como dispositivos médicos implantables (marcapasos, monitores de glucosa) o nodos de sensores con batería. Al reutilizar hardware, reduce el área del chip y el consumo, aceptando una latencia mayor como compromiso.
->
-> La microarquitectura **segmentada** es la elección en aplicaciones de **alto rendimiento sostenido**, como procesamiento de señales médicas en tiempo real (imágenes de resonancia magnética, ultrasonido) o aceleradores de cómputo científico. Aunque tiene mayor latencia inicial, su throughput de un resultado por ciclo la hace superior cuando se procesan grandes volúmenes de datos continuamente.
-
----
-
-### 4. De acuerdo con su implementación del banco de registros, ¿qué tanto difiere su implementación del banco de registros de un procesador?
-
-> _Una implementación de RISC-V por ejemplo, tiene 32 registros de 32 bits que ofrecen bastante espacio y capacidad para realizar operaciones. Mientras esta implementación 'reg_bank' solo tiene 16 registros de 8 bits. Por otro lado, 'reg_bank' tiene la habilidad de que cualquier registro puede tener cualquier valor pero las implementaciones RISC-V tienen el registro 0 en ese mismo valor por hardware lo que vuelve al primero ligeramente mas flexible. La lectura de RISC-V y de 'reg_bank' tienen igual cantidad de puertos de lectura y de escritura, pero en RISC-V la dirección viene del decodificador de instrucciones mientras en el caso de la implementación de 'reg_bank' viene de switches físicos. 
-
----
-
-### 5. Si le solicitan cuál microarquitectura ofrece el mejor balance entre rendimiento y consumo de recursos, ¿cuál elegiría y por qué?
-
-> La microarquitectura **multiciclo** ofrece el mejor balance para este diseño específico. Con solo 0.29% de CLBs frente al ~1.1% de las otras dos, reduce drásticamente el uso de recursos sin sacrificar correctitud. Si bien su frecuencia máxima (100.7 MHz) es la más baja de las tres, sigue siendo más que suficiente para operar a 100 MHz en la Nexys A7. El costo de 9 ciclos por resultado es aceptable en aplicaciones donde los vectores no cambian continuamente. La arquitectura segmentada sería preferible únicamente en escenarios de procesamiento en flujo continuo donde el throughput sostenido sea crítico.
-
----
+#### Entradas/salidas al gabinete
+| Ítem | Cant. | Nota |
+|------|-------|------|
+| Prensaestopa para cable 110VAC | 1 | Entrada de alimentación desde tomacorriente |
+| Extensor USB-C con panel mount | 1 | Para programar el Opta sin abrir el gabinete |
