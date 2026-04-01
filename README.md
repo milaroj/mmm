@@ -23,14 +23,10 @@
 ### Ya en la cotización
 | Ítem | Cant. cotizada | Estado |
 |------|---------------|--------|
-| Riel DIN perforado CP644 1MT | 1 | ⚠️ Insuficiente — ver nota |
-| Ducto ranurado 20×25mm | 1 | ⚠️ Revisar cantidad |
+| Riel DIN perforado CP4984 1MT | 2 | ✓ Cubre 3 rieles de ~450mm con margen |
+| Ducto ranurado 25×25mm | 3 | ✓ Calibre y cantidad correctos |
 | WAGO 2202 2.5mm² gris | 100 | ✓ |
 | WAGO 2202 2.5mm² verde/tierra | 10 | ✓ |
-
-> ⚠️ **Riel DIN:** El gabinete tiene 3 rieles de ~450mm cada uno = ~1.35m mínimo. Con 1 metro no alcanza. Pedir **2 metros** para tener margen de corte.
->
-> ⚠️ **Ducto:** El diseño tiene canaleta superior, media 1, media 2 y laterales. Verificar cuántos metros lineales se necesitan según las dimensiones del gabinete.
 
 ---
 
