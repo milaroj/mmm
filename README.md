@@ -58,15 +58,15 @@ graph TB
 
 | Bloque | Responsable | Descripción |
 |---|---|---|
-| **MicroBlaze V** | Persona 1 | Procesador RISC-V. Ejecuta el firmware en C: lógica del juego, renderizado a VRAM, coordinación de periféricos |
-| **AXI4 Interconnect** | Persona 1 | Bus de comunicación interno. Conecta el procesador con todos los periféricos |
-| **MIG DDR2** | Persona 2 | Controlador de memoria externa. Almacena firmware, sprites, variables del juego. Administrada manualmente sin OS |
-| **BRAM / VRAM** | Persona 3 | Framebuffer de doble puerto. El procesador escribe píxeles (puerto A, 100 MHz) y el controlador VGA los lee (puerto B, 25 MHz) |
-| **VGA Controller** | Persona 3 | Reutilizado del Proyecto 1. Genera señales de sincronía y lee la VRAM para producir la salida de video 640×480@60Hz |
-| **Juego Pong** | Persona 4 | Lógica del juego en C: movimiento de bola, colisiones, puntaje, renderizado de escena a VRAM |
-| **AXI Quad SPI (inter-board)** | Persona 5 | Comunicación SPI a 1 MHz con la board del grupo aliado. Intercambia estado del juego y posición de paleta remota |
-| **AXI Quad SPI (microSD)** | Persona 5 | Carga de assets desde microSD al inicio del sistema. Lee sprites, fuente y configuración del juego vía FatFs |
-| **AXI GPIO** | Persona 1 | Entradas de los dos controles locales (jugador 1 y jugador 2) |
+| **MicroBlaze V** | Procesador RISC-V. Ejecuta el firmware en C: lógica del juego, renderizado a VRAM, coordinación de periféricos |
+| **AXI4 Interconnect**  | Bus de comunicación interno. Conecta el procesador con todos los periféricos |
+| **MIG DDR2** | Controlador de memoria externa. Almacena firmware, sprites, variables del juego. Administrada manualmente sin OS |
+| **BRAM / VRAM** | Framebuffer de doble puerto. El procesador escribe píxeles (puerto A, 100 MHz) y el controlador VGA los lee (puerto B, 25 MHz) |
+| **VGA Controller**  | Reutilizado del Proyecto 1. Genera señales de sincronía y lee la VRAM para producir la salida de video 640×480@60Hz |
+| **Juego Pong**  | Lógica del juego en C: movimiento de bola, colisiones, puntaje, renderizado de escena a VRAM |
+| **AXI Quad SPI (inter-board)**  | Comunicación SPI a 1 MHz con la board del grupo aliado. Intercambia estado del juego y posición de paleta remota |
+| **AXI Quad SPI (microSD)**  | Carga de assets desde microSD al inicio del sistema. Lee sprites, fuente y configuración del juego vía FatFs |
+| **AXI GPIO**  | Entradas de los dos controles locales (jugador 1 y jugador 2) |
 
 ---
 
