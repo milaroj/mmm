@@ -21,55 +21,6 @@ Actualmente se implementan las siguientes operaciones:
 
 Los parámetros del modelo de referencia se cargan en la implementación C++ para realizar la comparación bajo las mismas condiciones.
 
-## Estructura del proyecto
-
-```text
-MobileNetV2/
-├── app/
-│   └── run_cpp_mobilenetv2.py
-│
-├── bindings/
-│   └── pybind_module.cpp
-│
-├── kernels/
-│   ├── BatchNorm2d.cpp
-│   ├── BatchNorm2d.hpp
-│   ├── Conv2d.cpp
-│   ├── Conv2d.hpp
-│   ├── Depthwise_Conv2d.cpp
-│   ├── Depthwise_Conv2d.hpp
-│   ├── GlobalAvgPool2d.cpp
-│   ├── GlobalAvgPool2d.hpp
-│   ├── LayerAdd.cpp
-│   ├── LayerAdd.hpp
-│   ├── Linear.cpp
-│   ├── Linear.hpp
-│   ├── Pointwise_Conv2d.cpp
-│   ├── Pointwise_Conv2d.hpp
-│   ├── ReLU6.cpp
-│   └── ReLU6.hpp
-│
-├── models/
-│   ├── CppMobileNetV2.py
-│   ├── ManualMobileNetV2.py
-│   └── MobileNetV2.py
-│
-├── wrappers/
-│   ├── BatchNorm2d.py
-│   ├── Conv2d.py
-│   ├── DepthwiseConv2d.py
-│   ├── GlobalAvgPool2d.py
-│   ├── LayerAdd.py
-│   ├── Linear.py
-│   └── PointwiseConv2d.py
-│
-├── test_images/
-│   └── imagen.jpeg
-│
-├── Makefile
-└── README.md
-```
-
 ## Flujo de ejecución
 
 La implementación sigue el siguiente flujo:
@@ -144,6 +95,14 @@ cpp_kernels.cpython-310-x86_64-linux-gnu.so
 
 El nombre exacto puede variar dependiendo de la versión de Python y de la arquitectura del sistema.
 
+Para compilar con la instrumentación de perfilado (`std::chrono`) activa:
+
+```bash
+make build PROFILE=1
+```
+
+Por defecto (`PROFILE=0`) el binario queda igual que si nunca se hubiera instrumentado — esto es lo que permite medir el overhead real de la instrumentación (ver sección de Resultados).
+
 ## Ejecución
 
 Para compilar, si es necesario, y ejecutar la comparación completa:
@@ -168,6 +127,12 @@ Por ejemplo:
 
 ```bash
 make run IMAGE=test_images/perro.jpg
+```
+
+`app/run_cpp_mobilenetv2.py` también acepta una resolución de entrada opcional como segundo argumento (por defecto 224):
+
+```bash
+PYTHONPATH="$(pwd)" venv/bin/python app/run_cpp_mobilenetv2.py test_images/imagen.jpeg 96
 ```
 
 ## Ejemplo de resultado
@@ -227,3 +192,59 @@ make help
 ```
 
 Muestra los comandos disponibles.
+
+---
+
+## Perfilado (Prototipo en C)
+
+Se instrumentó cada capa C++ (`conv2d`, `depthwise_conv`, `pointwise_conv`, `batchnorm`, `activacion`, `pooling`, `layer_add`, `linear`) con `std::chrono`, dentro de `bindings/pybind_module.cpp` (ver `kernels/Profiler.hpp`). El preprocesamiento en Python no se mide — el perfilado se enfoca solo en la inferencia en C++.
+
+Reproducir el perfilado:
+
+```bash
+make clean && make build PROFILE=1
+PYTHONPATH="$(pwd)" venv/bin/python app/profile_run.py --iterations 120 --warmup 8 --output resultados/perfilado.csv
+```
+
+Comparar overhead (con/sin instrumentación):
+
+```bash
+make clean && make build
+PYTHONPATH="$(pwd)" venv/bin/python app/profile_run.py --overhead-only --iterations 200 --warmup 10
+make clean && make build PROFILE=1
+PYTHONPATH="$(pwd)" venv/bin/python app/profile_run.py --overhead-only --iterations 200 --warmup 10
+```
+
+Validar con `perf`:
+
+```bash
+PYTHONPATH="$(pwd)" perf stat -- venv/bin/python app/profile_run.py --overhead-only --iterations 60 --warmup 8
+PYTHONPATH="$(pwd)" perf record -o perf.data -- venv/bin/python app/profile_run.py --overhead-only --iterations 60 --warmup 8
+perf report -i perf.data --stdio --sort=overhead,symbol | head -40
+```
+
+### Resultados — Michael (Dell G16-7620)
+
+**Entorno de prueba:**
+
+| Característica | Valor |
+|---|---|
+| Equipo | Dell G16-7620 |
+| Procesador | Intel Core i7-12700H (12ª gen) |
+| Arquitectura | x86-64 |
+| Set de instrucciones vectoriales | AVX2 |
+| Núcleos / hilos | 14 núcleos / 20 hilos |
+| Frecuencia base / turbo | 2.3 GHz / 4.7 GHz |
+| RAM | 16 GiB (2×8 GiB), SODIMM 4800 MHz |
+
+**Resultados obtenidos:**
+
+- **Cuello de botella:** `pointwise_conv` domina el tiempo total de inferencia — ~71% según `std::chrono` (muestreo de 120 corridas) y **59.45%** según `perf report` (ciclos de CPU). Ambas técnicas coinciden en el orden: `pointwise_conv` > `depthwise_conv` (8.74%) > `batchnorm` (5.71%) > `conv2d` inicial (4.51%) > `relu6` (4.25%).
+- **Muestreo:** 120 corridas medidas + 8 de warm-up descartadas, sobre el mismo tensor de entrada (224×224). Total: 18,120 filas en el CSV (151 operaciones × 120 corridas, sin pérdidas).
+- **Varianza:** al agrupar por (etapa, forma del tensor), la mayoría de las combinaciones tienen desviación estándar baja — la "varianza" observada al agrupar solo por etapa era mayormente por mezclar capas de tamaños distintos, no ruido real. Tres combinaciones sí muestran ruido genuino incluso con forma idéntica (`pointwise_conv 1x960x7x7`, `depthwise_conv 1x144x56x56`, `batchnorm 1x32x112x112`) — pendiente de investigar más a fondo.
+- **Overhead de instrumentación:** no medible / menor al ruido de fondo del sistema (~1-2%) — comparando 200 corridas con y sin `PROFILE_KERNELS`, la versión instrumentada no fue medible más lenta.
+- **Evidencia para optimización:** IPC (instrucciones por ciclo) de solo ~1.9-2.4 y ~33-37% de ciclos en `tma_backend_bound` (según `perf stat`) — el código no está vectorizado y el acceso a memoria es un factor limitante. Punto de partida claro para la etapa de paralelismo/optimización.
+
+### Resultados — [nombre de la compañera] (pendiente)
+
+Falta correr el mismo procedimiento en la segunda computadora y comparar contra lo anterior. La comparación contra el sistema empotrado se hace en una etapa posterior.
