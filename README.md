@@ -1,41 +1,5 @@
 # MobileNetV2 — PyTorch vs C++
 
-Implementación de **MobileNetV2** utilizando capas desarrolladas en **C++** e integradas con Python mediante **pybind11**.
-
-El proyecto utiliza la implementación de MobileNetV2 de PyTorch como referencia y permite comparar la inferencia realizada por PyTorch con la implementación basada en kernels C++.
-
-## Objetivo
-
-Implementar las principales operaciones utilizadas por MobileNetV2 en C++ y comprobar su funcionamiento comparando la salida del modelo con la implementación de referencia en PyTorch.
-
-Actualmente se implementan las siguientes operaciones:
-
-- Conv2D
-- Depthwise Conv2D
-- Pointwise Conv2D
-- BatchNorm2D
-- ReLU6
-- Layer Add
-- Global Average Pooling
-- Linear
-
-Los parámetros del modelo de referencia se cargan en la implementación C++ para realizar la comparación bajo las mismas condiciones.
-
-## Flujo de ejecución
-
-La implementación sigue el siguiente flujo:
-
-<p align="center">
-  <img src="diagrama.png" alt="Flujo del proyecto" width="400">
-</p>
-
-<p align="center">
-  <em>Figura 1. Flujo del proyecto. Imagen generada con inteligencia artificial.</em>
-</p>
-
-Se comparan los **1000 logits** producidos por ambos modelos y se calculan métricas de error como RMSE y error máximo.
-
-También se compara la clase predicha por ambas implementaciones.
 
 ## Requisitos
 
