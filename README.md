@@ -187,7 +187,7 @@ PYTHONPATH="$(pwd)" perf record -o perf.data -- venv/bin/python app/profile_run.
 perf report -i perf.data --stdio --sort=overhead,symbol | head -40
 ```
 
-### Resultados — Michael (Dell G16-7620)
+### Resultados — Milagro
 
 **Entorno de prueba:**
 
@@ -209,6 +209,6 @@ perf report -i perf.data --stdio --sort=overhead,symbol | head -40
 - **Overhead de instrumentación:** no medible / menor al ruido de fondo del sistema (~1-2%) — comparando 200 corridas con y sin `PROFILE_KERNELS`, la versión instrumentada no fue medible más lenta.
 - **Evidencia para optimización:** IPC (instrucciones por ciclo) de solo ~1.9-2.4 y ~33-37% de ciclos en `tma_backend_bound` (según `perf stat`) — el código no está vectorizado y el acceso a memoria es un factor limitante. Punto de partida claro para la etapa de paralelismo/optimización.
 
-### Resultados — [nombre de la compañera] (pendiente)
+### Resultados — Angie
 
 Falta correr el mismo procedimiento en la segunda computadora y comparar contra lo anterior. La comparación contra el sistema empotrado se hace en una etapa posterior.
